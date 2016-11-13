@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:15:47 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/10 17:35:04 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/12 13:31:10 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static void	disp_xy(t_e *d)
 	char	*str2;
 	char	*xy;
 
-	str1 = freejoin("x: ", ft_itoa((int)d->x * 10));
-	str2 = freejoin("   y: ", ft_itoa((int)d->y * 10));
+	str1 = freejoin("x: ", ft_itoa((int)d->x));
+	str2 = freejoin("   y: ", ft_itoa((int)d->y));
 	xy = free_join(str1, str2);
 	free(str2);
 	mlx_string_put(d->mlx, d->win, 10, 35, 0xFF0000, xy);
