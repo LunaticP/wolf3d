@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 08:22:24 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/13 04:17:57 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/14 12:53:04 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,26 +50,12 @@
 # define CTRL (key == 256  || key == 269)
 # define SHIFT (key == 257  || key == 258)
 
-# define ROT_XP 0x00000001
-# define ROT_XM 0x00000002
-# define ROT_YP 0x00000004
-# define ROT_YM 0x00000008
-# define ROT_ZP 0x00000010
-# define ROT_ZM 0x00000020
-# define POS_XP 0x00000040
-# define POS_XM 0x00000080
-# define POS_YP 0x00000100
-# define POS_YM 0x00000200
-# define POS_ZP 0x00000400
-# define POS_ZM 0x00000800
-# define SCALEP 0x00001000
-# define SCALEM 0x00002000
-# define FVIEWP 0x00004000
-# define FVIEWM 0x00008000
-# define CO_RED 0x00010000
-# define CO_GRE 0x00020000
-# define CO_BLU 0x00040000
-# define PSHIFT 0x00080000
-# define P_CTRL 0x00100000
+# define ROT_P	0x00000001
+# define ROT_M	0x00000002
+# define POS_XP	0x00000040
+# define POS_XM	0x00000080
+# define POS_YP	0x00000100
+# define POS_YM	0x00000200
+# define DRAW	0x10000000
 
 #endif

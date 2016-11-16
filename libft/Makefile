@@ -6,7 +6,7 @@
 #    By: aviau <aviau@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/09 02:00:53 by aviau             #+#    #+#              #
-#    Updated: 2016/07/04 20:35:02 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/16 09:25:22 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,14 +33,14 @@ FLAG = -Wall -Werror -Wextra
 all : $(NAME)
 
 $(NAME) : ./libft.h $(OBJ)
-	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 %.o:%.c
-	gcc -c $< -o $@
+	@gcc -c $< -o $@
 
 clean :
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 
 fclean : clean
 	rm -f $(NAME)

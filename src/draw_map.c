@@ -5,132 +5,146 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/10 08:07:59 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/13 11:22:09 by aviau            ###   ########.fr       */
+/*   Created: 2016/11/16 08:30:43 by aviau             #+#    #+#             */
+/*   Updated: 2016/11/16 09:42:37 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fdf.h>
+#include <wolf.h>
 
-#define X xy[0]
-#define Y xy[1]
-#define X2 xy[2]
-#define Y2 xy[3]
+#define mapWidth d->imax
+#define mapHeight d->jmax
 
-float		ft_abs(float num)
-{
-	if (num < 0)
-		return (-num);
-	return (num);
-}
-
-void	draw_col(t_e *d, double lenght, int x, int or)
+void	draw_col(t_e *d, int x, int drawStart, int drawEnd, int color)
 {
 	int y;
 
 	y = 0;
-	while (y < 500)
+	while (y < 1200)
 	{
-		if (ft_abs(y - 250) > lenght && y - 250 < 0)
-			d->color = 0;
-		else if (ft_abs(y - 250) > lenght && y - 250 >= 0)
-		{
-			d->color = (0x010101 * lenght);
-		}
+		if (y < drawStart)
+			d->color = get_color(0xCD + y / 10, 0xF9 + y / 10, 255);
+		else if (y >= drawStart && y <= drawEnd)
+			d->color = color;
 		else
-			d->color = or ? 0xAAAAAA : 0xCCCCCC;
+			d->color = 0xBB6666;
 		put_px(d, x, y);
 		y++;
 	}
 }
 
-void	draw_square(t_e *d, int sx, int sy, int size)
-{
-	int x;
-	int y;
-
-	y = sy;
-	while (y < sy + size)
-	{
-		x = sx;
-		while (x < sx + size)
-		{
-			put_px(d, x, y);
-			x++;
-		}
-		y++;
-	}
-	d->color = 0xFFFFFF;
-	put_px(d, sx, sy);
-	put_px(d, sx, y);
-	put_px(d, x, sy);
-	put_px(d, x, y);
-}
-
 void	draw_map(t_e *d)
 {
-	int j;
-	int i;
+
 	int x;
 
-	j = 0;
-	while (j < d->jmax)
-	{
-		i = 0;
-		while (i < d->imax)
-		{
-			if (d->grid[j][i] == 0)
-				d->color = 0x222222;
-			else
-				d->color = 0x225522;
-			draw_square(d, i * 50, j * 50 + 500, 50);
-			i++;
-		}
-		j++;
-	}
-	float	angle;
-	float	rad;
-	int	 	lenght;
-	int		Rx;
-	int		Ry;
-	int 	endX;
-	int 	endY;
-
-	angle = d->ang;
-	d->color = 0xFFFF00;
 	x = 0;
 	while (x < 1200)
 	{
-		Rx = d->x;
-		Ry = d->y;
-		lenght = 1;
-		rad = angle / 360.0f * (2.0f * 3.14159f);
-		endX = (float)lenght * cos(rad) + (float)Rx;
-		endY = (float)lenght * sin(rad) + (float)Ry;
-		while (d->grid[endY / 50][endX / 50] == 0)
+		d->rc.cameraX = 2 * x / 1200.0 - 1;
+		d->rc.rayPosX = d->rc.posX;
+		d->rc.rayPosY = d->rc.posY;
+		d->rc.rayDirX = d->rc.dirX + d->rc.planeX * d->rc.cameraX;
+		d->rc.rayDirY = d->rc.dirY + d->rc.planeY * d->rc.cameraX;
+		int mapX = (int)d->rc.rayPosX;
+		int mapY = (int)d->rc.rayPosY;
+
+		d->rc.deltaDistX = sqrt(1 + (d->rc.rayDirY * d->rc.rayDirY) / (d->rc.rayDirX * d->rc.rayDirX));
+		d->rc.deltaDistY = sqrt(1 + (d->rc.rayDirX * d->rc.rayDirX) / (d->rc.rayDirY * d->rc.rayDirY));
+		int stepX;
+		int stepY;
+		int hit = 0;
+		int side;
+		if (d->rc.rayDirX < 0)
 		{
-			endX = (float)lenght * cos(rad) + (float)Rx;
-			endY = (float)lenght * sin(rad) + (float)Ry;
-  			put_px(d, endX, endY + 500);
-			lenght++;
-		}
-		if (abs(endX - Rx) > abs(endY - Ry))
-		{
-//			lenght = abs(endY - Ry / 2);
-			draw_col(d, 200 - lenght / 2, x, 0);
+			stepX = -1;
+			d->rc.sideDistX = (d->rc.rayPosX - mapX) * d->rc.deltaDistX;
 		}
 		else
 		{
-//			lenght = abs(endX - Rx / 2);
-			draw_col(d, 200 - lenght / 2, x, 1);
+			stepX = 1;
+			d->rc.sideDistX = (mapX + 1.0 - d->rc.rayPosX) * d->rc.deltaDistX;
 		}
-		angle += 0.05;
+		if (d->rc.rayDirY < 0)
+		{
+			stepY = -1;
+			d->rc.sideDistY = (d->rc.rayPosY - mapY) * d->rc.deltaDistY;
+		}
+		else
+		{
+			stepY = 1;
+			d->rc.sideDistY = (mapY + 1.0 - d->rc.rayPosY) * d->rc.deltaDistY;
+		}
+		while (hit == 0)
+		{
+			if (d->rc.sideDistX < d->rc.sideDistY)
+			{
+				d->rc.sideDistX += d->rc.deltaDistX;
+				mapX += stepX;
+				side = 0;
+			}
+			else
+			{
+				d->rc.sideDistY += d->rc.deltaDistY;
+				mapY += stepY;
+				side = 1;
+			}
+			if (d->grid[mapX][mapY] > 0) hit = 1;
+		}
+		if (side == 0) d->rc.lenght = (mapX - d->rc.rayPosX + (1 - stepX) / 2) / d->rc.rayDirX;
+		else           d->rc.lenght = (mapY - d->rc.rayPosY + (1 - stepY) / 2) / d->rc.rayDirY;
+		int lineHeight = (int)(1200 / d->rc.lenght);
+		int drawStart = -lineHeight / 2 + 1200 / 2;
+		if(drawStart < 0)drawStart = 0;
+		int drawEnd = lineHeight / 2 + 1200 / 2;
+		if(drawEnd >= 1200)drawEnd = 1200 - 1;
+		switch(d->grid[mapX][mapY])
+		{
+			case 1:  d->color = 0xFF0000;  break;
+			case 2:  d->color = 0x00FF00;  break;
+			case 3:  d->color = 0x0000FF;   break;
+			case 4:  d->color = 0xFFFFFF;  break;
+			default: d->color = 0xFFFF00; break;
+		}
+		if (side == 1) {d->color = d->color / 2;}
+		draw_col(d, x, drawStart, drawEnd, d->color);
 		x++;
 	}
-	d->color = 0xFF0000;
-	put_px(d, d->x, d->y + 500);
-	put_px(d, d->x + 1, d->y + 500);
-	put_px(d, d->x, d->y + 1 + 500);
-	put_px(d, d->x - 1, d->y + 500);
-	put_px(d, d->x, d->y - 1 + 500);
+	/************************************************************************\
+	int moveSpeed = 1;
+	if (d->key & POS_YM)
+	{
+		ft_putstr("front\n");
+		if(d->grid[(int)(posX + dirX * moveSpeed)][(int)posY] == 0) posX += dirX * moveSpeed;
+		if(d->grid[(int)posX][(int)(posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
+	}
+	if (d->key & POS_YP)
+	{
+		ft_putstr("back\n");
+		if(d->grid[(int)(posX - dirX * moveSpeed)][(int)posY] == 0) posX -= dirX * moveSpeed;
+		if(d->grid[(int)posX][(int)(posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
+	}
+	int rotSpeed = 1;
+	//rotate to the right
+	if (d->key & POS_XP)
+	{
+		ft_putstr("right\n");
+		double oldDirX = dirX;
+		dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
+		dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
+		double oldPlaneX = planeX;
+		planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
+		planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
+	}
+	if (d->key & POS_XM)
+	{
+		ft_putstr("left\n");
+		double oldDirX = dirX;
+		dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
+		dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
+		double oldPlaneX = planeX;
+		planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
+		planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
+	}
+	\************************************************************************/
 }
