@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 12:28:14 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/16 10:01:22 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/17 22:50:45 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,28 @@
 
 int		mouse(int x, int y, t_e *d)
 {
-	float rotSpeed;
+	float	rsp;
+	double	olddirx;
+	double	oldplanex;
 
-	rotSpeed = (float)abs(d->lastx - x) / 50;
+	olddirx = d->rc.dirx;
+	oldplanex = d->rc.planex;
+	rsp = (float)abs(d->lastx - x) / 50;
 	if (d->lastx < x)
 	{
-		double oldDirX = d->rc.dirX;
-		d->rc.dirX = d->rc.dirX * cos(-rotSpeed) - d->rc.dirY * sin(-rotSpeed);
-		d->rc.dirY = oldDirX * sin(-rotSpeed) + d->rc.dirY * cos(-rotSpeed);
-		double oldPlaneX = d->rc.planeX;
-		d->rc.planeX = d->rc.planeX * cos(-rotSpeed) - d->rc.planeY * sin(-rotSpeed);
-		d->rc.planeY = oldPlaneX * sin(-rotSpeed) + d->rc.planeY * cos(-rotSpeed);
+		d->rc.dirx = d->rc.dirx * cos(-rsp) - d->rc.diry * sin(-rsp);
+		d->rc.diry = olddirx * sin(-rsp) + d->rc.diry * cos(-rsp);
+		d->rc.planex = d->rc.planex * cos(-rsp) - d->rc.planey * sin(-rsp);
+		d->rc.planey = oldplanex * sin(-rsp) + d->rc.planey * cos(-rsp);
 	}
 	else
 	{
-		double oldDirX = d->rc.dirX;
-		d->rc.dirX = d->rc.dirX * cos(rotSpeed) - d->rc.dirY * sin(rotSpeed);
-		d->rc.dirY = oldDirX * sin(rotSpeed) + d->rc.dirY * cos(rotSpeed);
-		double oldPlaneX = d->rc.planeX;
-		d->rc.planeX = d->rc.planeX * cos(rotSpeed) - d->rc.planeY * sin(rotSpeed);
-		d->rc.planeY = oldPlaneX * sin(rotSpeed) + d->rc.planeY * cos(rotSpeed);
+		d->rc.dirx = d->rc.dirx * cos(rsp) - d->rc.diry * sin(rsp);
+		d->rc.diry = olddirx * sin(rsp) + d->rc.diry * cos(rsp);
+		d->rc.planex = d->rc.planex * cos(rsp) - d->rc.planey * sin(rsp);
+		d->rc.planey = oldplanex * sin(rsp) + d->rc.planey * cos(rsp);
 	}
 	d->lastx = x;
 	d->lasty = y;
-	if (!(d->key & DRAW))
-		d->key += DRAW;
 	return (0);
 }

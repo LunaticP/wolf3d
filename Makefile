@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/11/16 09:53:57 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/17 14:50:15 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME=wolf3D
 SRC_NAME =	draw_map.c\
 			key.c\
 			mouse.c\
-			draw_line.c\
+			graphic.c\
 			get_next_line.c\
 			main.c\
 			parse.c

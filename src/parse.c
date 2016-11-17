@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/16 09:03:15 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/17 22:51:56 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int		lenght(char *line)
 		i++;
 	while (line[i])
 	{
-		while (ft_isdigit(line[i]) && line[i])
+		while ((ft_isdigit(line[i] || line[i] == 'S')) && line[i])
 			i++;
 		c++;
 		while (line[i] != ' ' && line[i] && ft_isprint(line[i]))
@@ -39,15 +39,15 @@ int		lenght(char *line)
 	return (c);
 }
 
-int		conv(int **grid, char *line, int size)
+int		conv(t_e *d, char *line, int size, int x)
 {
-	int			i;
-	int			c;
-	static int	max = 0;
+	int	i;
+	int	c;
+	int	max;
 
 	i = 0;
 	c = 0;
-	*grid = (int *)ft_memalloc(sizeof(int) * size);
+	d->grid[x] = (int *)ft_memalloc(sizeof(int) * size);
 	while (line[i])
 	{
 		if (line[i] == ',')
@@ -55,9 +55,14 @@ int		conv(int **grid, char *line, int size)
 				i++;
 		while (line[i] && line[i] == ' ')
 			i++;
-		grid[0][c] = ft_atoi(&line[i]);
-		if (grid[0][c] >= max)
-			max = grid[0][c];
+		if (line[i] == 'S')
+		{
+			d->grid[x][c] = 2;
+			d->rc.posy = c;
+			max = 1;
+		}
+		else
+			d->grid[x][c] = ft_atoi(&line[i]);
 		c++;
 		while (line[i] && line[i] != ' ' && line[i] != ',')
 			i++;
@@ -117,7 +122,8 @@ int		parse(char *file, t_e *data)
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		conv(&data->grid[c++], line, size);
+		if (conv(data, line, size, c))
+			data->rc.posx = data->jmax - c++ + 1;
 		free(line);
 	}
 	return (0);

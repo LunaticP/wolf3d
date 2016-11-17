@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 09:00:04 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/16 09:30:23 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/17 22:46:33 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,44 @@
 # include "get_next_line.h"
 # include <math.h>
 
+typedef struct		s_color
+{
+	int				r;
+	int				g;
+	int				b;
+	int				color;
+}					t_color;
+
+typedef struct		s_wmap
+{
+	int				side;
+	int				stepx;
+	int				stepy;
+	int				mapx;
+	int				mapy;
+	int				hit;
+	int				lineheight;
+	int				drawstart;
+	int				drawend;
+}					t_wmap;
+
 typedef struct		s_wolfcalc
 {
-	double	posX;
-	double	posY;
-	double	dirX;
-	double	dirY;
-	double	planeX;
-	double	planeY;
-	double	cameraX;
-	double	rayPosX;
-	double	rayPosY;
-	double	rayDirX;
-	double	rayDirY;
-	double	sideDistX;
-	double	sideDistY;
-	double	deltaDistX;
-	double	deltaDistY;
+	double	posx;
+	double	posy;
+	double	dirx;
+	double	diry;
+	double	planex;
+	double	planey;
+	double	camerax;
+	double	rayposx;
+	double	rayposy;
+	double	raydirx;
+	double	raydiry;
+	double	sidedistx;
+	double	sidedisty;
+	double	deltadistx;
+	double	deltadisty;
 	double	lenght;
 }					t_wolfcalc;
 
