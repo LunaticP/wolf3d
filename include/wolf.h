@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 09:00:04 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/17 22:46:33 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/18 05:35:01 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ typedef struct		s_e
 }					t_e;
 
 int					parse(char *file, t_e *data);
+void				w_reparse(t_e *data);
 int					get_color(int r, int g, int b);
 int					mouse(int x, int y, t_e *data);
 int					keypress(int key, t_e *data);

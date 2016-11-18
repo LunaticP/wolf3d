@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/11/17 14:50:15 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/18 05:34:22 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SRC_NAME =	draw_map.c\
 			graphic.c\
 			get_next_line.c\
 			main.c\
-			parse.c
+			parse.c\
+			reparse.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_PATH = ./src/

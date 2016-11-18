@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 08:30:43 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/17 22:53:14 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/18 07:41:37 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	draw_col(t_e *d, int x, int drawstart, int drawend, int color)
 		put_px(d, x, y);
 		y++;
 	}
+	d->color = 0xFFFFFF;
 }
 
 void	init_wlf(t_e *d, int x)
@@ -69,14 +70,14 @@ void	init_step_side(t_e *d, t_wmap *w)
 
 int		wall_color(int w_val, int side, int len)
 {
-	static int	col_p[3][12] = {
-		{5, 120, 173, 114, 208, 255, 255, 255, 0, 0, 0, 255},
-		{5, 100, 153, 92, 191, 0, 170, 255, 255, 255, 0, 0},
-		{5, 70, 107, 41, 152, 0, 0, 0, 0, 255, 255, 255}};
+	static int	col_p[3][13] = {
+		{0, 120, 173, 114, 208, 255, 255, 255, 0, 0, 0, 255, 255},
+		{0, 100, 153, 92, 191, 0, 170, 255, 255, 255, 0, 0, 255},
+		{0, 70, 107, 41, 152, 0, 0, 0, 0, 255, 255, 255, 255}};
 	t_color		c;
 
 	(void)w_val;
-	if (w_val >= 11)
+	if (w_val >= 13)
 		c.color = 0xFFFFFF;
 	else
 	{
@@ -108,7 +109,7 @@ void	draw_map(t_e *d)
 		{
 			if (d->rc.sidedistx < d->rc.sidedisty)
 			{
-				d->rc.sidedistx += d->rc.deltadisty;
+				d->rc.sidedistx += d->rc.deltadistx;
 				w.mapx += w.stepx;
 				w.side = 0;
 			}
@@ -118,26 +119,21 @@ void	draw_map(t_e *d)
 				w.mapy += w.stepy;
 				w.side = 1;
 			}
-			if (w.mapx < d->jmax || w.mapy < d->imax || w.mapx > 0 || w.mapy > 0)
-				w.hit = (d->grid[w.mapx][w.mapy] > 0) ? 1 : 0;
-			else
+			if (d->grid[w.mapx][w.mapy] > 0)
 				w.hit = 1;
 		}
 		if (w.side == 0)
-			d->rc.lenght = (w.mapx - d->rc.rayposx + (1 - w.stepx) / 2)
-				/ d->rc.raydirx;
+			d->rc.lenght = (w.mapx - d->rc.rayposx + (1 - w.stepx) / 2) / d->rc.raydirx;
 		else
-			d->rc.lenght = (w.mapy - d->rc.rayposy + (1 - w.stepy) / 2)
-				/ d->rc.raydiry;
+			d->rc.lenght = (w.mapy - d->rc.rayposy + (1 - w.stepy) / 2)	/ d->rc.raydiry;
 		w.lineheight = (int)(1200 / d->rc.lenght);
-		w.drawstart = -w.lineheight / 2 + 1200 / 2;
+		w.drawstart = -(w.lineheight) / 2 + 1200 / 2;
 		if (w.drawstart < 0)
 			w.drawstart = 0;
 		w.drawend = w.lineheight / 2 + 1200 / 2;
 		if (w.drawend >= 1200)
 			w.drawend = 1200 - 1;
 		d->color = wall_color(d->grid[w.mapx][w.mapy], w.side, d->rc.lenght);
-//		if (d->grid[w.mapx][w.mapy] == 1)
 		draw_col(d, x, w.drawstart, w.drawend, d->color);
 		x++;
 	}

@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/17 22:51:32 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/18 05:46:56 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	print_map(t_e d)
 
 int		wolf_loop(t_e *d)
 {
-	print_map(*d);
+//	print_map(*d);
 	keyapply(d);
 	draw_map(d);
 	mlx_put_image_to_window(d->mlx, d->win, d->image, 0, 0);
@@ -75,6 +75,7 @@ int		main(int ac, char **av)
 				\e[33mPut 'S' in the map\e[0m\n");
 		exit(1);
 	}
+	w_reparse(&d);
 	d.rc.posx += 0.05;
 	d.rc.posy += 0.05;
 	ft_putstr("\e[32m[done]\n\e[33mwindows creation...\t\e[0m");
