@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 09:00:04 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 01:12:50 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:40:25 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 # define WSIZE	1100
 # define HSIZE	900
-# define SPEED	7
+# define SPEED	8
 
 typedef struct		s_color
 {

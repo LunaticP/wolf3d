@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/11/20 02:46:50 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/20 06:37:47 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,18 @@ INC=-I ./include -I./libft -I ./libmlx
 ARG=-L ./libft -lft -lmlx\
 	-framework OpenGl -framework AppKit
 CFLAGS = -Wall -Wextra -Werror
+DEPDIR				= .deps/
+DEPFILES			= $(patsubst %.c,$(DEPDIR)%.d,$(SRC_NAME))
+
 all: $(NAME)
+
+# Auto dependency generator
+$(DEPDIR)/%.d: $(SRC_PATH)%.c $(DEPDIR)%.d
+	@mkdir -p $(DEPDIR)
+	@$(CC) $(CFLAGS) $(INC) -MM -MT $(DEPDIR)$(patsubst %.c,$(DEPDIR)%.d,$(notdir $@)) $< -MF $@
+
+# Add dependency as prerequisites
+-include $(DEPFILES)
 
 $(NAME): lib $(OBJ)
 	@gcc -g -O0 $(CFLAGS) $(ARG) $(INC) $(OBJ) -o $@
@@ -44,7 +55,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@gcc $(CFLAGS) -c -o $@ $< $(INC)
 
 clean:
-	-@rm -rf $(OBJ_PATH)
+	-@rm -rf $(OBJ_PATH) $(DEPDIR)
 	@make -C ./libft $@
 
 fclean: clean
