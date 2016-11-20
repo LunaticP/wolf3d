@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/18 05:46:56 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:20:42 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,14 @@ void	print_map(t_e d)
 
 int		wolf_loop(t_e *d)
 {
-//	print_map(*d);
 	keyapply(d);
 	draw_map(d);
 	mlx_put_image_to_window(d->mlx, d->win, d->image, 0, 0);
+	if (d->lc > 5000 && d->lc <= 10000)
+		d->l += 0.03;
+	if (d->lc > 25000 && d->lc <= 30000)
+		d->l -= 0.03;
+	d->lc = (d->lc < 30000) ? d->lc + 1 : 0;
 	return (0);
 }
 
@@ -56,6 +60,8 @@ t_e		init(void)
 	d.rc.diry = 0;
 	d.rc.planex = 0;
 	d.rc.planey = 0.66;
+	d.lc = 4990;
+	d.l = 1;
 	return (d);
 }
 
@@ -63,11 +69,8 @@ int		main(int ac, char **av)
 {
 	t_e	d;
 
-	if (ac != 2)
-		parse(NULL, &d);
+	(ac != 2) ? parse(NULL, &d) : 0;
 	d = init();
-	d.name = ft_strdup(av[1]);
-	ft_putstr("\e[33mparsing...\t\t\e[0m");
 	parse(av[1], &d);
 	if (d.rc.posx == -1 || d.rc.posy == -1)
 	{
@@ -78,15 +81,15 @@ int		main(int ac, char **av)
 	w_reparse(&d);
 	d.rc.posx += 0.05;
 	d.rc.posy += 0.05;
-	ft_putstr("\e[32m[done]\n\e[33mwindows creation...\t\e[0m");
 	d.mlx = mlx_init();
-	d.win = mlx_new_window(d.mlx, 1200, 1200, "fdf");
-	d.image = mlx_new_image(d.mlx, 1200, 1200);
+	d.win = mlx_new_window(d.mlx, WSIZE, HSIZE, "fdf");
+	d.image = mlx_new_image(d.mlx, WSIZE, HSIZE);
 	d.addr = mlx_get_data_addr(d.image, &d.bpp, &d.l_size, &d.endian);
-	ft_putstr("\e[32m[done]\e[0m\n");
 	mlx_hook(d.win, 2, (1L << 0), &keypress, &d);
 	mlx_hook(d.win, 3, (1L << 1), &keyrel, &d);
 	mlx_hook(d.win, 6, (1L << 13), &mouse, &d);
+	mlx_hook(d.win, 17, (1L << 17), w_close, &d);
 	mlx_loop_hook(d.mlx, &wolf_loop, &d);
 	mlx_loop(d.mlx);
+	w_close(&d);
 }

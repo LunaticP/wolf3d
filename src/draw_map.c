@@ -6,69 +6,53 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 08:30:43 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/18 07:41:37 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 02:29:32 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <wolf.h>
 
-void	draw_col(t_e *d, int x, int drawstart, int drawend, int color)
+void	draw_col(t_e *d, int x, int drawstart, int drawend)
 {
 	int y;
+	int	color;
+	int	r;
+	int	g;
+	int	b;
 
 	y = 0;
-	while (y < 1200)
+	color = d->color;
+	while (y < HSIZE)
 	{
+		r = 0xCD + y / 10 - (d->l - 50) * 5;
+		g = 0xF9 + y / 10 - d->l * 3;
+		b = 0xFF - d->l * 2;
 		if (y < drawstart)
-			d->color = get_color(0xCD + y / 10, 0xF9 + y / 10, 255);
+			d->color = get_color(r, g, b);
 		else if (y >= drawstart && y <= drawend)
 			d->color = color;
 		else
-			d->color = 0x007B0C;
-		put_px(d, x, y);
-		y++;
+			d->color = get_color(0, 0x7B * ((y - HSIZE / 4) - (d->l * (1 -
+			sinf(x * M_PI / WSIZE)) * 2) - d->l) / 700, 12);
+		put_px(d, x, y++);
 	}
 	d->color = 0xFFFFFF;
 }
 
 void	init_wlf(t_e *d, int x)
 {
-	d->rc.camerax = 2 * x / 1200.0 - 1;
-	d->rc.rayposx = d->rc.posx;
-	d->rc.rayposy = d->rc.posy;
-	d->rc.raydirx = d->rc.dirx + d->rc.planex * d->rc.camerax;
-	d->rc.raydiry = d->rc.diry + d->rc.planey * d->rc.camerax;
-	d->rc.deltadistx = sqrt(1 + (d->rc.raydiry * d->rc.raydiry) \
-			/ (d->rc.raydirx * d->rc.raydirx));
-	d->rc.deltadisty = sqrt(1 + (d->rc.raydirx * d->rc.raydirx) \
-			/ (d->rc.raydiry * d->rc.raydiry));
+	d->rc.camerax = 2 * x / (float)WSIZE - 1;
+	d->rc.rposx = d->rc.posx;
+	d->rc.rposy = d->rc.posy;
+	d->rc.rdirx = d->rc.dirx + d->rc.planex * d->rc.camerax;
+	d->rc.rdiry = d->rc.diry + d->rc.planey * d->rc.camerax;
+	d->rc.deltadistx = sqrt(1 + (d->rc.rdiry * d->rc.rdiry) \
+			/ (d->rc.rdirx * d->rc.rdirx));
+	d->rc.deltadisty = sqrt(1 + (d->rc.rdirx * d->rc.rdirx) \
+			/ (d->rc.rdiry * d->rc.rdiry));
 }
 
-void	init_step_side(t_e *d, t_wmap *w)
-{
-	if (d->rc.raydirx < 0)
-	{
-		w->stepx = -1;
-		d->rc.sidedistx = (d->rc.rayposx - w->mapx) * d->rc.deltadistx;
-	}
-	else
-	{
-		w->stepx = 1;
-		d->rc.sidedistx = (w->mapx + 1.0 - d->rc.rayposx) * d->rc.deltadistx;
-	}
-	if (d->rc.raydiry < 0)
-	{
-		w->stepy = -1;
-		d->rc.sidedisty = (d->rc.rayposy - w->mapy) * d->rc.deltadisty;
-	}
-	else
-	{
-		w->stepy = 1;
-		d->rc.sidedisty = (w->mapy + 1.0 - d->rc.rayposy) * d->rc.deltadisty;
-	}
-}
-
-int		wall_color(int w_val, int side, int len)
+int		wall_color(t_e *d, int w_val, int side, int x)
 {
 	static int	col_p[3][13] = {
 		{0, 120, 173, 114, 208, 255, 255, 255, 0, 0, 0, 255, 255},
@@ -76,14 +60,17 @@ int		wall_color(int w_val, int side, int len)
 		{0, 70, 107, 41, 152, 0, 0, 0, 0, 255, 255, 255, 255}};
 	t_color		c;
 
-	(void)w_val;
+	w_val = abs(w_val);
 	if (w_val >= 13)
 		c.color = 0xFFFFFF;
 	else
 	{
-		c.r = col_p[0][w_val] - (side * 10) - len;
-		c.g = col_p[1][w_val] - (side * 10) - len;
-		c.b = col_p[2][w_val] - (side * 10) - len;
+		c.r = col_p[0][w_val] - (side * 10) - (d->rc.len * (d->l / 25.0)) \
+			- (d->l * (1 - sinf(x * M_PI / WSIZE)) / 2);
+		c.g = col_p[1][w_val] - (side * 10) - (d->rc.len * (d->l / 25.0)) \
+			- (d->l * (1 - sinf(x * M_PI / WSIZE)) / 2);
+		c.b = col_p[2][w_val] - (side * 10) - (d->rc.len * (d->l / 25.0)) \
+			- (d->l * (1 - sinf(x * M_PI / WSIZE)) / 2);
 		c.r = c.r < 0 ? 0 : c.r;
 		c.g = c.g < 0 ? 0 : c.g;
 		c.b = c.b < 0 ? 0 : c.b;
@@ -92,49 +79,58 @@ int		wall_color(int w_val, int side, int len)
 	return (c.color);
 }
 
+void	ray_len(t_e *d, t_wmap *w)
+{
+	int hit;
+
+	hit = 0;
+	while (hit == 0)
+	{
+		if (d->rc.sidedistx < d->rc.sidedisty)
+		{
+			d->rc.sidedistx += d->rc.deltadistx;
+			w->mapx += w->stepx;
+			w->side = 0;
+		}
+		else
+		{
+			d->rc.sidedisty += d->rc.deltadisty;
+			w->mapy += w->stepy;
+			w->side = 1;
+		}
+		if (d->grid[w->mapx][w->mapy] != 0 && d->grid[w->mapx][w->mapy] != 99)
+			hit = 1;
+	}
+	if (w->side == 0)
+		d->rc.len = (w->mapx - d->rc.rposx + (1 - w->stepx) / 2) / d->rc.rdirx;
+	else
+		d->rc.len = (w->mapy - d->rc.rposy + (1 - w->stepy) / 2) / d->rc.rdiry;
+}
+
 void	draw_map(t_e *d)
 {
 	int		x;
 	t_wmap	w;
 
 	x = 0;
-	while (x < 1200)
+	while (x < WSIZE)
 	{
 		init_wlf(d, x);
-		w.mapx = (int)d->rc.rayposx;
-		w.mapy = (int)d->rc.rayposy;
-		w.hit = 0;
+		w.mapx = (int)d->rc.rposx;
+		w.mapy = (int)d->rc.rposy;
 		init_step_side(d, &w);
-		while (w.hit == 0)
-		{
-			if (d->rc.sidedistx < d->rc.sidedisty)
-			{
-				d->rc.sidedistx += d->rc.deltadistx;
-				w.mapx += w.stepx;
-				w.side = 0;
-			}
-			else
-			{
-				d->rc.sidedisty += d->rc.deltadisty;
-				w.mapy += w.stepy;
-				w.side = 1;
-			}
-			if (d->grid[w.mapx][w.mapy] > 0)
-				w.hit = 1;
-		}
-		if (w.side == 0)
-			d->rc.lenght = (w.mapx - d->rc.rayposx + (1 - w.stepx) / 2) / d->rc.raydirx;
-		else
-			d->rc.lenght = (w.mapy - d->rc.rayposy + (1 - w.stepy) / 2)	/ d->rc.raydiry;
-		w.lineheight = (int)(1200 / d->rc.lenght);
-		w.drawstart = -(w.lineheight) / 2 + 1200 / 2;
+		ray_len(d, &w);
+		w.lineheight = (int)(HSIZE / d->rc.len);
+		w.drawstart = -(w.lineheight) / 2 + HSIZE / 2;
 		if (w.drawstart < 0)
 			w.drawstart = 0;
-		w.drawend = w.lineheight / 2 + 1200 / 2;
-		if (w.drawend >= 1200)
-			w.drawend = 1200 - 1;
-		d->color = wall_color(d->grid[w.mapx][w.mapy], w.side, d->rc.lenght);
-		draw_col(d, x, w.drawstart, w.drawend, d->color);
+		w.drawend = w.lineheight / 2 + HSIZE / 2;
+		if (w.drawend >= HSIZE)
+			w.drawend = HSIZE - 1;
+		d->color = wall_color(d, d->grid[w.mapx][w.mapy], w.side, x);
+		draw_col(d, x, w.drawstart, w.drawend);
 		x++;
 	}
+	minimap(d);
+	d->color = 0xFF00;
 }

@@ -6,11 +6,35 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/05 04:34:12 by aviau             #+#    #+#             */
-/*   Updated: 2016/07/01 05:40:17 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:15:25 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+char	*ft_strjoin2(char const *s1, char const *s2, int ifre)
+{
+	char	*result;
+
+	if (s1 && s2)
+	{
+		result = ft_strnew(ft_strlen(s1) + ft_strlen(s2) + 1);
+		if (result)
+		{
+			ft_strcpy(result, s1);
+			ft_strcat(result, s2);
+		}
+		else
+			result = NULL;
+	}
+	else
+		result = NULL;
+	if (ifre == 1 || ifre == 3)
+		ft_strdel((char **)&s1);
+	if (ifre == 2 || ifre == 3)
+		ft_strdel((char **)&s2);
+	return (result);
+}
 
 char	*ft_strjoin(char const *a, char const *b)
 {

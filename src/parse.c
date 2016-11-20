@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/18 05:53:41 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:12:25 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,10 @@ int		lenght(char *line)
 	return (c);
 }
 
-int		conv(t_e *d, char *line, int size, int x)
+void	conv(t_e *d, char *line, int size, int x)
 {
 	int	i;
 	int	c;
-	int	max;
 
 	i = 0;
 	c = 0;
@@ -55,11 +54,10 @@ int		conv(t_e *d, char *line, int size, int x)
 				i++;
 		while (line[i] && line[i] == ' ')
 			i++;
-		if (line[i] == 'S')
+		if (line[i] == 'S' && !(d->grid[x][c] = 0))
 		{
-			d->grid[x][c] = 0;
-			d->rc.posy = c;
-			max = 1;
+			d->rc.posx = x + 0.5;
+			d->rc.posy = c + 0.5;
 		}
 		else
 			d->grid[x][c] = ft_atoi(&line[i]);
@@ -67,7 +65,6 @@ int		conv(t_e *d, char *line, int size, int x)
 		while (line[i] && line[i] != ' ' && line[i] != ',')
 			i++;
 	}
-	return (max);
 }
 
 void	ex_err(char *file)
@@ -92,11 +89,10 @@ int		mem(t_e *data, int c, int fd, int ret)
 		ft_putstr("\" is not a file\n");
 		exit(1);
 	}
-	data->grid = (int **)ft_memalloc(sizeof(int *) * (c + 1));
-	data->grid[c] = NULL;
+	data->grid = (int **)ft_memalloc(sizeof(int *) * c);
 	data->jmax = c;
 	close(fd);
-	return (0);
+	return (-1);
 }
 
 int		parse(char *file, t_e *data)
@@ -114,17 +110,16 @@ int		parse(char *file, t_e *data)
 	while ((ret = get_next_line(fd, &line)) > 0 && c++)
 	{
 		size = lenght(line);
-		if (size > data->imax)
-			data->imax = size;
-		free(line);
+		data->imax = (size > data->imax) ? size : data->imax;
+		ft_strdel(&line);
 	}
 	c = mem(data, c - 1, fd, ret);
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		if (conv(data, line, size, c))
-			data->rc.posx = data->jmax - c++ + 1;
-		free(line);
+		conv(data, line, size, ++c);
+		ft_strdel(&line);
 	}
+	close(fd);
 	return (0);
 }

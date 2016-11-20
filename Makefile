@@ -6,7 +6,7 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/11/18 05:34:22 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/20 02:46:50 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ SRC_NAME =	draw_map.c\
 			get_next_line.c\
 			main.c\
 			parse.c\
-			reparse.c
+			trash.c\
+			minimap.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 SRC_PATH = ./src/
@@ -33,7 +34,7 @@ CFLAGS = -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME): lib $(OBJ)
-	@gcc $(CFLAGS) $(ARG) $(INC) $(OBJ) -o $@
+	@gcc -g -O0 $(CFLAGS) $(ARG) $(INC) $(OBJ) -o $@
 
 lib:
 	@make -C ./libft

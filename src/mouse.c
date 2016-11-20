@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/10/01 12:28:14 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/17 22:50:45 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/19 09:33:06 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		mouse(int x, int y, t_e *d)
 
 	olddirx = d->rc.dirx;
 	oldplanex = d->rc.planex;
-	rsp = (float)abs(d->lastx - x) / 50;
+	rsp = ((float)abs(d->lastx - x) / 50) * (SPEED / 10.0);
 	if (d->lastx < x)
 	{
 		d->rc.dirx = d->rc.dirx * cos(-rsp) - d->rc.diry * sin(-rsp);

@@ -3,84 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aviau <aviau@42.fr>                        +#+  +:+       +#+        */
+/*   By: amaitre <amaitre@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/26 04:22:38 by aviau             #+#    #+#             */
-/*   Updated: 2016/10/01 08:15:39 by aviau            ###   ########.fr       */
+/*   Created: 2015/12/21 20:09:16 by amaitre           #+#    #+#             */
+/*   Updated: 2016/11/20 06:17:31 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char		*free_join(char *dst, char *src)
+static t_fd			*get_current_fd(int const fd, t_list **fds)
 {
-	char	*tmp;
+	t_list		*tmp;
+	t_fd		content;
 
-	tmp = dst;
-	dst = ft_strjoin(dst, src);
-	free(tmp);
-	return (dst);
-}
-
-static int	freeturn(char *buf, int r)
-{
-	free(buf);
-	return (r);
-}
-
-static int	save_buf(int index, char **line)
-{
-	static char	*save;
-	char		*tmp;
-	int			i;
-	int			ret;
-
-	if (!(i = 0) && index)
+	tmp = *fds;
+	while (tmp != NULL)
 	{
-		free(save ? save : NULL);
-		return (((save = ft_strdup((char *)line + index)) == NULL) ? -1 : 1);
+		if (((t_fd *)tmp->content)->fd == fd)
+			return (tmp->content);
+		tmp = tmp->next;
 	}
-	else if (!save)
-		return (0);
-	else
-	{
-		while (save[i] && save[i] != '\n')
-			i++;
-		ret = (save[i] == '\n') ? 1 : 0;
-		save[i] = '\0';
-		*line = ft_strjoin(*line, save);
-		tmp = (ret) ? ft_strdup(&save[i + 1]) : ft_strdup("");
-		free(save);
-		save = tmp;
-		return (ret);
-	}
+	content.fd = fd;
+	content.res = NULL;
+	ft_lstadd(fds, ft_lstnew((void *)&content, sizeof(content)));
+	return ((*fds)->content);
 }
 
-int			get_next_line(int const fd, char **line)
+static int			ft_check_rest(t_fd *current, char **line)
 {
-	int		r;
-	int		i;
-	int		rd;
-	char	*buf;
+	char			*tmp;
 
-	if ((r = 1) && (fd < 0 || !line))
-		return (-1);
-	buf = ft_strnew(BUFF_SIZE + 1);
-	if ((*line = ft_strnew(0)) && save_buf(0, line))
-		return (freeturn(buf, r));
-	rd = 1;
-	while (!(BUFF_SIZE == 1 && !rd) && (r > 0 && !(i = 0)))
+	tmp = ft_strchr(current->res, '\n');
+	if (tmp)
 	{
-		ft_strclr(buf);
-		if ((rd = read(fd, buf, BUFF_SIZE)) < 0)
+		*line = ft_strsub2(current->res, 0, tmp - current->res, 0);
+		ft_memmove(current->res, tmp + 1, ft_strlen(tmp));
+		tmp = NULL;
+		return (1);
+	}
+	return (0);
+}
+
+static	int			ft_read(int fd, t_fd *current, char **line)
+{
+	char			buf[BUFF_SIZE + 1];
+	int				ret;
+
+	while ((ret = read(fd, buf, BUFF_SIZE)))
+	{
+		if (ret == -1)
 			return (-1);
-		while (r > 0 && buf[i] && buf[i] != '\n')
-			i++;
-		r = (buf[i] == '\n' || !rd) ? 0 : 1;
-		buf[i] = '\0';
-		*line = free_join(*line, buf);
-		r = (save_buf(i + 1, (char **)buf) == -1) ? -1 : r;
+		buf[ret] = '\0';
+		if (current->res)
+			current->res = ft_strjoin2(current->res, buf, 1);
+		else
+			current->res = ft_strdup(buf);
+		if (ft_check_rest(current, line))
+			return (1);
 	}
-	r = (BUFF_SIZE == 1) ? rd : r;
-	return (freeturn(buf, (*line[0] || buf[i + 1]) ? 1 : r));
+	return (0);
+}
+
+int					get_next_line(int const fd, char **line)
+{
+	static t_list		*fds = NULL;
+	t_fd				*current;
+	int					result;
+
+	if (!line || fd < 0)
+		return (-1);
+	current = get_current_fd(fd, &fds);
+	if (current->res && ft_check_rest(current, line))
+		return (1);
+	if ((result = ft_read(fd, current, line)) != 0)
+		return (result);
+	if (current->res == NULL || current->res[0] == '\0')
+		return (0);
+	*line = current->res;
+	current->res = NULL;
+	return (1);
 }
