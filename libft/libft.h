@@ -6,7 +6,7 @@
 /*   By: aviau <aviau@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/05 04:35:17 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 06:17:02 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:46:25 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char				**ft_strsplit(char const *s, char c);
 char				*ft_strstr(const char *s1, const char *s2);
 char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strsub2(char const *s, unsigned int start, size_t len,\
-	   				size_t fre);
+					size_t fre);
 char				*ft_strtrim(char const *s);
 int					ft_toupper(int c);
 int					ft_tolower(int c);

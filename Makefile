@@ -1,3 +1,4 @@
+
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
@@ -6,11 +7,11 @@
 #    By: aviau <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/09/11 11:02:36 by aviau             #+#    #+#              #
-#    Updated: 2016/11/20 06:37:47 by aviau            ###   ########.fr        #
+#    Updated: 2016/11/20 06:48:18 by aviau            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME=wolf3D
+NAME=wolf3d
 
 SRC_NAME =	draw_map.c\
 			key.c\
@@ -30,7 +31,7 @@ OBJ=$(addprefix $(OBJ_PATH),$(OBJ_NAME))
 INC=-I ./include -I./libft -I ./libmlx
 ARG=-L ./libft -lft -lmlx\
 	-framework OpenGl -framework AppKit
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
 DEPDIR				= .deps/
 DEPFILES			= $(patsubst %.c,$(DEPDIR)%.d,$(SRC_NAME))
 

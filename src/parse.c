@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/16 07:01:53 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 06:12:25 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 08:18:44 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		lenght(char *line)
 			i++;
 		if (!ft_isprint(line[i]) && line[i] != '\0')
 		{
-			ft_putstr("./fdf : file error\n");
+			ft_putstr("./wolf3d : file error\n");
 			exit(1);
 		}
 		while (line[i] == ' ' && line[i])
@@ -59,7 +59,7 @@ void	conv(t_e *d, char *line, int size, int x)
 			d->rc.posx = x + 0.5;
 			d->rc.posy = c + 0.5;
 		}
-		else
+		else if (line[i])
 			d->grid[x][c] = ft_atoi(&line[i]);
 		c++;
 		while (line[i] && line[i] != ' ' && line[i] != ',')
@@ -70,10 +70,10 @@ void	conv(t_e *d, char *line, int size, int x)
 void	ex_err(char *file)
 {
 	if (file == NULL)
-		ft_putstr("usage : ./fdf <file>\n");
+		ft_putstr("usage : ./wolf3d <file>\n");
 	else
 	{
-		ft_putstr("./fdf : file \"");
+		ft_putstr("./wolf3d : file \"");
 		ft_putstr(file);
 		ft_putstr("\" is unavailable\n");
 	}
@@ -84,7 +84,7 @@ int		mem(t_e *data, int c, int fd, int ret)
 {
 	if (ret < 0)
 	{
-		ft_putstr("./fdf : \"");
+		ft_putstr("./wolf3d : \"");
 		ft_putstr(data->name);
 		ft_putstr("\" is not a file\n");
 		exit(1);
@@ -117,7 +117,7 @@ int		parse(char *file, t_e *data)
 	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &line) > 0)
 	{
-		conv(data, line, size, ++c);
+		conv(data, line, data->imax, ++c);
 		ft_strdel(&line);
 	}
 	close(fd);

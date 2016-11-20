@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/16 08:30:43 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 02:29:32 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 07:05:32 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int		wall_color(t_e *d, int w_val, int side, int x)
 	t_color		c;
 
 	w_val = abs(w_val);
-	if (w_val >= 13)
+	if (abs(w_val) >= 13)
 		c.color = 0xFFFFFF;
 	else
 	{

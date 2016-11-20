@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/19 22:07:28 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 06:13:17 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 07:58:53 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,15 @@ t_color	give_col(int wall, int light)
 		{12, 70, 107, 41, 152, 0, 0, 0, 0, 255, 255, 255, 255}};
 	t_color		c;
 
-	c.r = col[0][wall];
-	c.g = col[1][wall];
-	c.b = col[2][wall];
+	c.r = 255;
+	c.g = 255;
+	c.b = 255;
+	if (abs(wall) < 13)
+	{
+		c.r = col[0][abs(wall)];
+		c.g = col[1][abs(wall)];
+		c.b = col[2][abs(wall)];
+	}
 	if (wall == 0)
 		c.ratio = (25 - light / 2) > 0 ? 25 - light / 2 : 0;
 	else
@@ -76,13 +82,13 @@ void	minimap(t_e *d)
 		while (++i < d->imax)
 		{
 			d->c = give_col(d->grid[j][i], d->l);
-			draw_square(d, j * 5, i * 5, 5);
+			draw_square(d, i * 5, j * 5, 5);
 		}
 	}
 	d->c.r = 0;
 	d->c.ratio = 100;
-	draw_square(d, (d->rc.posx) * 5 - 1.5, (d->rc.posy) * 5 - 1.5, 3);
+	draw_square(d, (d->rc.posy) * 5 - 1.5, (d->rc.posx) * 5 - 1.5, 3);
 	d->c.r = 255;
-	draw_square(d, (d->rc.posx - 0.25 + d->rc.dirx) * 5, \
-		(d->rc.posy - 0.25 + d->rc.diry) * 5, 2);
+	draw_square(d, (d->rc.posy - 0.25 + d->rc.diry) * 5, \
+		(d->rc.posx - 0.25 + d->rc.dirx) * 5, 2);
 }

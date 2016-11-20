@@ -6,7 +6,7 @@
 /*   By: aviau <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/15 06:22:00 by aviau             #+#    #+#             */
-/*   Updated: 2016/11/20 06:20:42 by aviau            ###   ########.fr       */
+/*   Updated: 2016/11/20 06:47:51 by aviau            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int		main(int ac, char **av)
 	d.rc.posx += 0.05;
 	d.rc.posy += 0.05;
 	d.mlx = mlx_init();
-	d.win = mlx_new_window(d.mlx, WSIZE, HSIZE, "fdf");
+	d.win = mlx_new_window(d.mlx, WSIZE, HSIZE, "wolf3d");
 	d.image = mlx_new_image(d.mlx, WSIZE, HSIZE);
 	d.addr = mlx_get_data_addr(d.image, &d.bpp, &d.l_size, &d.endian);
 	mlx_hook(d.win, 2, (1L << 0), &keypress, &d);
