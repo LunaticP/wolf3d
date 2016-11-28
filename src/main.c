@@ -87,7 +87,7 @@ int		main(int ac, char **av)
 	d.addr = mlx_get_data_addr(d.image, &d.bpp, &d.l_size, &d.endian);
 	mlx_hook(d.win, 2, (1L << 0), &keypress, &d);
 	mlx_hook(d.win, 3, (1L << 1), &keyrel, &d);
-	mlx_hook(d.win, 6, (1L << 13), &mouse, &d);
+	mlx_hook(d.win, 6, (1L << 6), &mouse, &d);
 	mlx_hook(d.win, 17, (1L << 17), w_close, &d);
 	mlx_loop_hook(d.mlx, &wolf_loop, &d);
 	mlx_loop(d.mlx);

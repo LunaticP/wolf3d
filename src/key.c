@@ -40,6 +40,33 @@ int		keyrel(int key, t_e *d)
 	return (0);
 }
 
+void	movex(t_e *d)
+{
+	int	rx;
+	int	ry;
+	int	lx;
+	int	ly;
+
+	rx = (int)(d->rc.posx + d->rc.planex * 0.2);
+	ry = (int)(d->rc.posy + d->rc.planey * 0.2);
+	lx = (int)(d->rc.posx - d->rc.planex * 0.2);
+	ly = (int)(d->rc.posy - d->rc.planey * 0.2);
+	if (d->key & POS_XM)
+	{
+		if (d->grid[rx][(int)d->rc.posy] <= 0)
+			d->rc.posx -= d->rc.planex * 0.2;
+		if (d->grid[(int)d->rc.posx][ry] <= 0)
+			d->rc.posy -= d->rc.planey * 0.2;
+	}
+	if (d->key & POS_XP)
+	{
+		if (d->grid[lx][(int)d->rc.posy] <= 0)
+			d->rc.posx += d->rc.planex * 0.2;
+		if (d->grid[(int)d->rc.posx][ly] <= 0)
+			d->rc.posy += d->rc.planey * 0.2;
+	}
+}
+
 void	movey(t_e *d)
 {
 	int fwx;
@@ -69,6 +96,8 @@ void	movey(t_e *d)
 
 void	keyapply(t_e *d)
 {
+	if (d->key & (POS_XP | POS_XM))
+		movex(d);
 	if (d->key & (POS_YP | POS_YM))
 		movey(d);
 }

@@ -28,9 +28,8 @@ SRC_PATH = ./src/
 OBJ_PATH = ./obj/
 SRC=$(addprefix $(SRC_PATH),$(SRC_NAME))
 OBJ=$(addprefix $(OBJ_PATH),$(OBJ_NAME))
-INC=-I ./include -I./libft -I ./libmlx
-ARG=-L ./libft -lft -lmlx\
-	-framework OpenGl -framework AppKit
+INC=-I./include -I./libft -I./libmlx -I/usr/X11R6/include/
+ARG=-L./libft -lft -L./libmlx -lmlx -lm -lX11 -lXext
 CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
 DEPDIR				= .deps/
 DEPFILES			= $(patsubst %.c,$(DEPDIR)%.d,$(SRC_NAME))
@@ -46,7 +45,7 @@ $(DEPDIR)/%.d: $(SRC_PATH)%.c $(DEPDIR)%.d
 -include $(DEPFILES)
 
 $(NAME): lib $(OBJ)
-	@gcc -g -O0 $(CFLAGS) $(ARG) $(INC) $(OBJ) -o $@
+	@gcc -g -O0 $(CFLAGS) $(ARG) $(INC) $(OBJ) ./libft/libft.a ./libmlx/libmlx.a -o $@
 
 lib:
 	@make -C ./libft

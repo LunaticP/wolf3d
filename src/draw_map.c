@@ -33,7 +33,7 @@ void	draw_col(t_e *d, int x, int drawstart, int drawend)
 			d->color = color;
 		else
 			d->color = get_color(0, 0x7B * ((y - HSIZE / 4) - (d->l * (1 -
-			sinf(x * M_PI / WSIZE)) * 2) - d->l) / 700, 12);
+			sinf(x * M_PI / WSIZE)) * ((int)(d->l * 10) % 2 + 1)) - d->l) / 700, 12);
 		put_px(d, x, y++);
 	}
 	d->color = 0xFFFFFF;
@@ -62,7 +62,7 @@ int		wall_color(t_e *d, int w_val, int side, int x)
 
 	w_val = abs(w_val);
 	if (abs(w_val) >= 13)
-		c.color = 0xFFFFFF;
+		c.color = 0;
 	else
 	{
 		c.r = col_p[0][w_val] - (side * 10) - (d->rc.len * (d->l / 25.0)) \
@@ -98,7 +98,9 @@ void	ray_len(t_e *d, t_wmap *w)
 			w->mapy += w->stepy;
 			w->side = 1;
 		}
-		if (d->grid[w->mapx][w->mapy] != 0 && d->grid[w->mapx][w->mapy] != 99)
+		if (d->l > 100 && d->grid[w->mapx][w->mapy] > 0 && d->grid[w->mapx][w->mapy] != 99)
+			hit = 1;
+		else if (d->l < 100 && d->grid[w->mapx][w->mapy] != 0 && d->grid[w->mapx][w->mapy] != 99)
 			hit = 1;
 	}
 	if (w->side == 0)

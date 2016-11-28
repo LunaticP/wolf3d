@@ -18,9 +18,10 @@
 # include "libft.h"
 # include "get_next_line.h"
 # include <math.h>
+# include <stdint.h>
 
-# define WSIZE	1100
-# define HSIZE	900
+# define WSIZE	1200
+# define HSIZE	800
 # define SPEED	8
 
 typedef struct		s_color
